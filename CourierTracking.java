@@ -1,275 +1,144 @@
 import java.util.Scanner;
+import java.util.InputMismatchException;
 
-public class CourierTracking
-{
-static Scanner sc = new Scanner(System.in);
+// Parent class
+class Courier {
+    String trackingId;
+    String sender;
+    String receiver;
+    String status;
+    int estimatedDays;
 
-static void Book()
-{
-System.out.println("Enter Sender's name: ");
-System.out.println("Enter Receiver's name: ");
-System.out.println("Enter Destination: ");
-System.out.println("Courier booked successfully!");
-System.out.println("Your Tracking ID: 0001");
-System.out.println("Status: Booked");
+    Courier(String trackingId, String sender, String receiver,
+            String status, int estimatedDays) {
+        this.trackingId = trackingId;
+        this.sender = sender;
+        this.receiver = receiver;
+        this.status = status;
+        this.estimatedDays = estimatedDays;
+    }
+
+    // Method
+    void displayDetails() {
+        System.out.println("Tracking ID: " + trackingId);
+        System.out.println("Sender: " + sender);
+        System.out.println("Receiver: " + receiver);
+        System.out.println("Status: " + status);
+        System.out.println("Estimated Days: " + estimatedDays);
+    }
 }
 
-public static void Track()
-{
-System.out.print("Enter tracking id: ");
-String id = sc.next();
+// Child class - Inheritance
+class Shipment extends Courier {
 
-if (id.equals("0001"))
-{
-System.out.println("----- COURIER TRACKING -----");
-System.out.println("Tracking ID: 0001");
-System.out.println("Booked: [YES]");
-System.out.println("Picked Up: [YES]");
-System.out.println("In Transit: [YES]");
-System.out.println("Out for Delivery: [NO]");
-System.out.println("Delivered: [NO]");
-System.out.println("Current Status: In Transit");
+    Shipment(String trackingId, String sender, String receiver,
+             String status, int estimatedDays) {
+        super(trackingId, sender, receiver, status, estimatedDays);
+    }
+
+    // Method overriding
+    @Override
+    void displayDetails() {
+        System.out.println("\n----- Courier Details -----");
+        super.displayDetails();
+    }
 }
 
-else if (id.equals("0002"))
-{
-System.out.println("----- COURIER TRACKING -----");
-System.out.println("Tracking ID: 0002");
-System.out.println("Booked: [YES]");
-System.out.println("Picked Up: [YES]");
-System.out.println("In Transit: [YES]");
-System.out.println("Out for Delivery: [YES]");
-System.out.println("Delivered: [YES]");
-System.out.println("Current Status: Delivered");
-}
+// Main class
+public class CourierTracking {
 
-else if (id.equals("0003"))
-{
-System.out.println("----- COURIER TRACKING -----");
-System.out.println("Tracking ID: 0003");
-System.out.println("Booked: [YES]");
-System.out.println("Picked Up: [NO]");
-System.out.println("In Transit: [NO]");
-System.out.println("Out for Delivery: [NO]");
-System.out.println("Delivered: [NO]");
-System.out.println("Current Status: Picked Up");
-}
+    static Scanner sc = new Scanner(System.in);
 
-else if (id.equals("0004"))
-{
-System.out.println("----- COURIER TRACKING -----");
-System.out.println("Tracking ID: 0004");
-System.out.println("Booked: [YES]");
-System.out.println("Picked Up: [YES]");
-System.out.println("In Transit: [YES]");
-System.out.println("Out for Delivery: [YES]");
-System.out.println("Delivered: [NO]");
-System.out.println("Current Status: Out for Delivery");
-}
+    // Array of shipment objects
+    static Shipment[] shipments = {
+        new Shipment("CP101", "Asha", "Kiran", "Dispatched", 3),
+        new Shipment("CP102", "Ravi", "Meena", "In Transit", 2),
+        new Shipment("CP103", "Neha", "Arun", "Delivered", 0)
+    };
 
-else if (id.equals("0005"))
-{
-System.out.println("----- COURIER TRACKING -----");
-System.out.println("Tracking ID: 0005");
-System.out.println("Booked: [YES]");
-System.out.println("Picked Up: [NO]");
-System.out.println("In Transit: [NO]");
-System.out.println("Out for Delivery: [NO]");
-System.out.println("Delivered: [NO]");
-System.out.println("Current Status: Booked");
-}
+    // Method overloading: search by tracking ID
+    static void trackShipment(String id) {
+        boolean found = false;
 
-else
-{
-System.out.println("Courier not found.");
-}
-}
+        for (int i = 0; i < shipments.length; i++) {
+            if (shipments[i].trackingId.equalsIgnoreCase(id.trim())) {
+                shipments[i].displayDetails();
+                found = true;
+                break;
+            }
+        }
 
-public static void Status()
-{
-System.out.println("Enter tracking id: ");
-System.out.println("Select status: ");
-System.out.println("1. Booked");
-System.out.println("2. Picked Up");
-System.out.println("3. In Transit");
-System.out.println("4. Out for Delivery");
-System.out.println("5. Delivered");
+        if (!found) {
+            System.out.println("Courier not found!");
+        }
+    }
 
-System.out.println("Enter new status: ");
-int b = sc.nextInt();
+    // Method overloading: search by array index
+    static void trackShipment(int index) {
+        if (index >= 0 && index < shipments.length) {
+            shipments[index].displayDetails();
+        } else {
+            System.out.println("Invalid shipment index!");
+        }
+    }
 
-switch(b)
-{
-case 1:
-System.out.println("Status Updated to Booked");
-break;
+    // Display all shipments
+    static void displayAll() {
+        for (int i = 0; i < shipments.length; i++) {
+            shipments[i].displayDetails();
+        }
+    }
 
-case 2:
-System.out.println("Status Updated to Picked Up");
-break;
+    public static void main(String[] args) {
 
-case 3:
-System.out.println("Status Updated to In Transit");
-break;
+        int choice = 0;
 
-case 4:
-System.out.println("Status Updated to Out for Delivery");
-break;
+        while (choice != 4) {
+            System.out.println("\n===== COURIER TRACKING SYSTEM =====");
+            System.out.println("1. Track Courier by ID");
+            System.out.println("2. Display All Couriers");
+            System.out.println("3. Track Courier by Index");
+            System.out.println("4. Exit");
+            System.out.print("Enter your choice: ");
 
-case 5:
-System.out.println("Status Updated to Delivered");
-break;
+            try {
+                choice = sc.nextInt();
+                sc.nextLine(); // Consume newline
 
-default:
-System.out.println("Invalid choice");
-}
-}
+                switch (choice) {
+                    case 1:
+                        System.out.print("Enter Tracking ID: ");
+                        String id = sc.nextLine();
+                        trackShipment(id);
+                        break;
 
-public static void Search()
-{
-System.out.print("Enter tracking id: ");
-String id = sc.next();
+                    case 2:
+                        displayAll();
+                        break;
 
-if (id.equals("0001"))
-{
-System.out.println("Tracking ID: 0001");
-System.out.println("Sender: Shaan");
-System.out.println("Receiver: Akshith");
-System.out.println("Destination: Tanguturu");
-System.out.println("Status: Booked");
-}
+                    case 3:
+                        System.out.print(
+                            "Enter index (0 to " +
+                            (shipments.length - 1) + "): "
+                        );
+                        int index = sc.nextInt();
+                        trackShipment(index);
+                        break;
 
-else if (id.equals("0002"))
-{
-System.out.println("Tracking ID: 0002");
-System.out.println("Sender: Kumar");
-System.out.println("Receiver: Tanush");
-System.out.println("Destination: Jammalamadugu");
-System.out.println("Status: Picked Up");
-}
+                    case 4:
+                        System.out.println("Thank you for using the system!");
+                        break;
 
-else if (id.equals("0003"))
-{
-System.out.println("Tracking ID: 0003");
-System.out.println("Sender: Kumar");
-System.out.println("Receiver: Jaswanth");
-System.out.println("Destination: Hyderabad");
-System.out.println("Status: In Transit");
-}
+                    default:
+                        System.out.println("Invalid choice. Try again.");
+                }
 
-else if (id.equals("0004"))
-{
-System.out.println("Tracking ID: 0004");
-System.out.println("Sender: Guna");
-System.out.println("Receiver: Sanjay");
-System.out.println("Destination: Mumbai");
-System.out.println("Status: Out for Delivery");
-}
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input! Please enter a number.");
+                sc.nextLine(); // Clear invalid input
+            }
+        }
 
-else if (id.equals("0005"))
-{
-System.out.println("Tracking ID: 0005");
-System.out.println("Sender: Srija");
-System.out.println("Receiver: Charan");
-System.out.println("Destination: Delhi");
-System.out.println("Status: Delivered");
-}
-
-else
-{
-System.out.println("Courier not found.");
-}
-}
-
-public static void DisplayAll()
-{
-System.out.println("----- ALL COURIERS -----");
-
-System.out.println("Tracking ID: 0001");
-System.out.println("Sender: Shaan");
-System.out.println("Receiver: Akshith");
-System.out.println("Destination: Tanguturu");
-System.out.println("Status: Booked");
-System.out.println();
-
-System.out.println("Tracking ID: 0002");
-System.out.println("Sender: Kumar");
-System.out.println("Receiver: Tanush");
-System.out.println("Destination: Jammalamadugu");
-System.out.println("Status: Picked Up");
-System.out.println();
-
-System.out.println("Tracking ID: 0003");
-System.out.println("Sender: Kumar");
-System.out.println("Receiver: Jaswanth");
-System.out.println("Destination: Hyderabad");
-System.out.println("Status: In Transit");
-System.out.println();
-
-System.out.println("Tracking ID: 0004");
-System.out.println("Sender: Guna");
-System.out.println("Receiver: Sanjay");
-System.out.println("Destination: Mumbai");
-System.out.println("Status: Out for Delivery");
-System.out.println();
-
-System.out.println("Tracking ID: 0005");
-System.out.println("Sender: Srija");
-System.out.println("Receiver: Charan");
-System.out.println("Destination: Delhi");
-System.out.println("Status: Delivered");
-}
-
-public static void Exit()
-{
-System.out.println("Thank you for using Courier Tracking System!");
-}
-
-public static void main(String args[])
-{
-while(true)
-{
-System.out.println();
-System.out.println("----- COURIER TRACKING SYSTEM -----");
-System.out.println("1. Book New Courier");
-System.out.println("2. Track Courier");
-System.out.println("3. Update Courier Status");
-System.out.println("4. Display All Couriers");
-System.out.println("5. Search Courier");
-System.out.println("6. Exit");
-
-System.out.print("Enter your choice: ");
-int n = sc.nextInt();
-
-switch(n)
-{
-case 1:
-Book();
-break;
-
-case 2:
-Track();
-break;
-
-case 3:
-Status();
-break;
-
-case 4:
-DisplayAll();
-break;
-
-case 5:
-Search();
-break;
-
-case 6:
-Exit();
-return;
-
-default:
-System.out.println("Cannot perform that.");
-}
-}
-}
+        sc.close();
+    }
 }
